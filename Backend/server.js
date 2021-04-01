@@ -1,8 +1,10 @@
 import express from "express";
-import connectDB from "./config/db.js";
-import userRoute from "./routes/userRoutes.js";
 import dotenv from "dotenv";
 import colors from "colors";
+import morgan from "morgan";
+import connectDB from "./config/db.js";
+import userRoute from "./routes/userRoutes.js";
+import { notFound, errorHandler } from "./middlewares/errorMiddleWare.js";
 
 dotenv.config();
 
@@ -11,8 +13,17 @@ connectDB();
 const app = express();
 app.use(express.json());
 
+// morgan for production
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
+
 // Routes
 app.use("/api/users", userRoute);
+
+// MiddleWares
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
