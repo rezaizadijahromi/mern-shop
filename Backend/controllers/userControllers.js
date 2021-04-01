@@ -54,23 +54,65 @@ const registerUser = asyncHandler(async (req, res) => {
     confirmationCode: generateConfirmation(email),
   });
 
+  // res.send({
+  //   message: "User was registered successfully! Please check your email",
+  // });
+
+  // sendConfirmationEmail(user.name, user.email, user.confirmationCode);
+  // res.redirect("/");
+
+  const output = `
+    <p>You have a new contact request</p>
+    <h3>Contact Details</h3>
+    <ul>  
+      <li>Name: ${req.body.name}</li>
+      <li>Email: ${req.body.email}</li>
+    </ul>
+    <h3>Message</h3>
+  `;
+
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.user, // generated ethereal user
+      pass: process.env.password, // generated ethereal password
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  // setup email data with unicode symbols
+  let mailOptions = {
+    from: '"Nodemailer Contact" rijpythondeveloper@email.com', // sender address
+    to: email, // list of receivers
+    subject: "Node Contact Request", // Subject line
+    text: "Hello world?", // plain text body
+    html: output, // html body
+  };
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log("Message sent: %s", info.messageId);
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  });
+
   if (user) {
     const newUser = await user.save();
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      isAdmin: newUser.isAdmin,
       token: generateToken(user._id),
       confirmationCode: generateConfirmation(user.email),
     });
-
-    res.send({
-      message: "User was registered successfully! Please check your email",
-    });
-
-    sendConfirmationEmail(user.name, user.email, user.confirmationCode);
-    res.redirect("/");
   } else {
     res.status(400);
     throw new Error("Invalid user data");
