@@ -1,5 +1,6 @@
 import express from "express";
 import connectDB from "./config/db.js";
+import userRoute from "./routes/userRoutes.js";
 import dotenv from "dotenv";
 import colors from "colors";
 
@@ -9,6 +10,9 @@ connectDB();
 
 const app = express();
 app.use(express.json());
+
+// Routes
+app.use("/api/users", userRoute);
 
 const PORT = process.env.PORT || 5000;
 
