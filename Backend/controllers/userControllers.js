@@ -4,6 +4,9 @@ import sendConfirmationEmail from "../config/nodemailer.config.js";
 import { generateToken, generateConfirmation } from "../utils/generateToken.js";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
+import express from "express";
+
+const router = express.Router();
 
 // @desc Login in get token
 // @route POST /api/users/login
@@ -68,8 +71,8 @@ const registerUser = asyncHandler(async (req, res) => {
       <li>Name: ${req.body.name}</li>
       <li>Email: ${req.body.email}</li>
     </ul>
-    <h3>Message</h3>
-  `;
+    <a href=http://localhost:8081/confirm/${user.confirmationCode}> Click here</a>
+    </h3>`;
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
