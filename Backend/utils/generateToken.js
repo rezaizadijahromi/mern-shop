@@ -6,4 +6,10 @@ const generateToken = (id) => {
   });
 };
 
-export default generateToken;
+const generateConfirmation = (email) => {
+  return jwt.sign({ email }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+};
+
+export { generateToken, generateConfirmation };

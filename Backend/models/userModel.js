@@ -20,6 +20,16 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    status: {
+      type: String,
+      enum: ["Pending", "Active"],
+      default: "Pending",
+    },
+    confirmationCode: {
+      type: String,
+      default: null,
+      unique: true,
+    },
   },
   {
     timestamps: true,
