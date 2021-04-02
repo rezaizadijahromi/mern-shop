@@ -205,7 +205,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 // @access Private/Admin
 
 const getUsers = asyncHandler(async (req, res) => {
-  const users = User.find({});
+  const users = await User.find({});
   if (users.length > 0) {
     res.json(users);
   } else {
@@ -219,7 +219,7 @@ const getUsers = asyncHandler(async (req, res) => {
 // @access Private/Admin
 
 const deleteUser = asyncHandler(async (req, res) => {
-  const user = User.findById(req.params.id);
+  const user = await User.findById(req.params.id);
 
   if (user) {
     res.json({ message: "User removed" });
@@ -234,7 +234,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 // @access Private/Admin
 
 const getUsersById = asyncHandler(async (req, res) => {
-  const user = User.findById(req.params.id);
+  const user = await User.findById(req.params.id);
 
   if (user) {
     user.name = req.body.name || user.name;
