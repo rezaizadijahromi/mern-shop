@@ -4,6 +4,7 @@ import colors from "colors";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import userRoute from "./routes/userRoutes.js";
+import productRoute from "./routes/productRoutes.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleWare.js";
 
 dotenv.config();
@@ -20,6 +21,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Routes
 app.use("/api/users", userRoute);
+app.use("/api/products", productRoute);
 
 // MiddleWares
 app.use(notFound);
