@@ -60,7 +60,7 @@ const getOrderById = asyncHandler(async (req, res) => {
 // @access  Private
 
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-  const order = Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id);
 
   if (order) {
     order.isPaid = true;
@@ -86,7 +86,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @access  Private
 
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
-  const order = Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id);
 
   if (order) {
     order.isDelivered = true;
@@ -106,7 +106,7 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 // @access  Private
 
 const getMyOrders = asyncHandler(async (req, res) => {
-  const order = Order.find({ user: req.user._id });
+  const order = await Order.find({ user: req.user._id });
 
   if (order) {
     res.status(order);
