@@ -1,10 +1,13 @@
 import express from "express";
+import path from "path";
 import dotenv from "dotenv";
 import colors from "colors";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import userRoute from "./routes/userRoutes.js";
 import productRoute from "./routes/productRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleWare.js";
 
 dotenv.config();
@@ -22,6 +25,11 @@ if (process.env.NODE_ENV === "development") {
 // Routes
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
+app.use("/api/orders", orderRoutes);
+app.use("/api/upload", uploadRoutes);
+
+const __dirname = path.resolve();
+app.user("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 // MiddleWares
 app.use(notFound);
