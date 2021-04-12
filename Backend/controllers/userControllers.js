@@ -195,6 +195,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       name: updatedUser.name,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      token: generateToken(updatedUser._id),
     });
   } else {
     res.status(404);
@@ -202,18 +203,12 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc Get all the users
-// @route GET /api/users
-// @access Private/Admin
-
+// @desc    Get all users
+// @route   GET /api/users
+// @access  Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
   const users = await User.find({});
-  if (users.length > 0) {
-    res.json(users);
-  } else {
-    res.status(404);
-    throw new Error("No users found");
-  }
+  res.json(users);
 });
 
 // @desc delete user
@@ -233,20 +228,30 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc Get users by id
-// @route GET /api/users/:id
-// @access Private/Admin
+// @desc    Get user by ID
+// @route   GET /api/users/:id
+// @access  Private/Admin
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password");
 
-const getUsersById = asyncHandler(async (req, res) => {
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
+// @desc    Update user
+// @route   PUT /api/users/:id
+// @access  Private/Admin
+const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   if (user) {
     user.name = req.body.name || user.name;
-    user.email = req.body.eamil || user.name;
-
-    if (user.password) {
-      user.password = req.body.password;
-    }
+    user.email = req.body.email || user.email;
+    user.isAdmin = req.body.isAdmin;
 
     const updatedUser = await user.save();
 
@@ -261,7 +266,6 @@ const getUsersById = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
-
 export {
   authUser,
   registerUser,
@@ -270,5 +274,6 @@ export {
   verifyUser,
   getUsers,
   deleteUser,
-  getUsersById,
+  getUserById,
+  updateUser,
 };
