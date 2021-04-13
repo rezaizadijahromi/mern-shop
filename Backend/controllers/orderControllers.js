@@ -93,12 +93,12 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
     order.isDelivered = true;
     order.deliveredAt = Date.now();
 
-    const updateOrder = new Order.save();
+    const updatedOrder = await order.save();
 
-    res.status(updateOrder);
+    res.json(updatedOrder);
   } else {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error("Order not found");
   }
 });
 
