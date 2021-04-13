@@ -17,8 +17,8 @@ const ProfileScreen = ({ location, history }) => {
 
   const { userInfo } = userLogin;
 
-  const [name, setName] = useState(userInfo.name);
-  const [email, setEmail] = useState(userInfo.email);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -39,7 +39,7 @@ const ProfileScreen = ({ location, history }) => {
     } else {
       if (!user || !user.name || success) {
         dispatch(getUserDetails("profile"));
-        // dispatch({ type: USER_UPDATE_PROFILE_RESET });
+        dispatch({ type: USER_UPDATE_PROFILE_RESET });
       } else {
         setName(user.name);
         setEmail(user.email);
