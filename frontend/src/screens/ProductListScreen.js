@@ -1,25 +1,24 @@
 import React, { useEffect } from "react";
-import { Button, Col, Row, Table } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { listUsers, deleteUsers } from "../actions/userActions";
-import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
+import Paginate from "../components/Paginate";
 import {
   listProducts,
-  createProduct,
   deleteProduct,
+  createProduct,
 } from "../actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 const ProductListScreen = ({ history, match }) => {
+  const pageNumber = match.params.pageNumber || 1;
+
   const dispatch = useDispatch();
 
   const productList = useSelector((state) => state.productList);
-  const { loading, error, products } = productList;
-
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  const { loading, error, products, page, pages } = productList;
 
   const productDelete = useSelector((state) => state.productDelete);
   const {
@@ -36,8 +35,11 @@ const ProductListScreen = ({ history, match }) => {
     product: createdProduct,
   } = productCreate;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   useEffect(() => {
-    dispatch({ type: PRODUCT_CREATE_RESET });
+    // dispatch({ type: PRODUCT_CREATE_RESET })
 
     if (!userInfo || !userInfo.isAdmin) {
       history.push("/login");
@@ -46,7 +48,7 @@ const ProductListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push(`/admin/product/${createdProduct._id}/edit`);
     } else {
-      dispatch(listProducts);
+      dispatch(listProducts("", pageNumber));
     }
   }, [
     dispatch,
@@ -55,16 +57,16 @@ const ProductListScreen = ({ history, match }) => {
     successDelete,
     successCreate,
     createdProduct,
+    pageNumber,
   ]);
+
   const deleteHandler = (id) => {
-    if (window.confirm("Are you sure?")) {
-      // Delete products
+    if (window.confirm("Are you sure")) {
       dispatch(deleteProduct(id));
     }
   };
 
   const createProductHandler = () => {
-    // Create
     dispatch(createProduct());
   };
 
@@ -126,7 +128,7 @@ const ProductListScreen = ({ history, match }) => {
               ))}
             </tbody>
           </Table>
-          {/* <Paginate pages={pages} page={page} isAdmin={true} /> */}
+          <Paginate pages={pages} page={page} isAdmin={true} />
         </>
       )}
     </>
