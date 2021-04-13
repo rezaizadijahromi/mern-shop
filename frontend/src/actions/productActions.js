@@ -168,7 +168,7 @@ export const updateProduct = (product) => async (dispatch, getState) => {
   }
 };
 
-export const createproductReview = (productId, review) => async (
+export const createProductReview = (productId, review) => async (
   dispatch,
   getState,
 ) => {
@@ -186,10 +186,15 @@ export const createproductReview = (productId, review) => async (
       },
     };
 
-    await axios.post(`/api/products/${productId}/reviews`, review, config);
+    const { data } = await axios.post(
+      `/api/products/${productId}/reviews`,
+      review,
+      config,
+    );
 
     dispatch({
       type: PRODUCT_CREATE_REVIEW_SUCCESS,
+      payload: data,
     });
   } catch (error) {
     const message =
